@@ -4,8 +4,13 @@ from flask import Flask, render_template, request, redirect, flash, url_for
 
 def loadClubs():
     with open('clubs.json') as c:
+<<<<<<< HEAD
         listOfClubs = json.load(c)['clubs']
         return listOfClubs
+=======
+        listOfclubs = json.load(c)['clubs']
+        return listOfclubs
+>>>>>>> fff11ead9b9a595458bef732ea4340aa1e5a0f61
 
 
 def loadCompetitions():
