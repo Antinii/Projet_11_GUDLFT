@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Club points display board</title>
+    <style>
+        table {
+            border-collapse: collapse;
+            width: 50%;
+            max-width: 600px;
+        }
+        th, td {
+            border: 1px solid #dddddd;
+            text-align: left;
+            padding: 8px;
+        }
+        th {
+            background-color: #f2f2f2;
+        }
+    </style>
+</head>
+<body>
+    <h1>Club points display board</h1>
+    <table>
+        <thead>
+            <tr>
+                <th>Club Name</th>
+                <th>Points</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for club in points_table %}
+            <tr>
+                <td>{{ club['name'] }}</td>
+                <td>{{ club['points'] }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    </body>
+    <hr>
+    <button><a href="{{url_for('index')}}">Return</a></button>
+</body>
+</html>
