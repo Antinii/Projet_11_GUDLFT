@@ -5,8 +5,8 @@ from datetime import datetime
 
 
 def loadClubs():
-    with open('clubs.json') as c:
-        listOfClubs = json.load(c)['clubs']
+    with open('clubs.json') as club:
+        listOfClubs = json.load(club)['clubs']
         return listOfClubs
 
 
@@ -57,29 +57,29 @@ def book(competition, club):
 def purchasePlaces():
     competition = [c for c in competitions if c['name'] == request.form['competition']][0]
     club = [c for c in clubs if c['name'] == request.form['club']][0]
-    club_points = int(club["points"])
+    clubPoints = int(club["points"])
     placesRequired = int(request.form['places'])
     maxPlacesAllowed = 12
     maxPlacesAllowedMessage = f"Sorry! You can't book more then {maxPlacesAllowed} places."
+    competitionPlaces = int(competition['numberOfPlaces'])
 
-    if placesRequired > maxPlacesAllowed:
+    if placesRequired > maxPlacesAllowed: # check if the number of places booked is not exceeding 12 per competition.
         return render_template('booking.html', club=club, competition=competition,
                                maxPlacesAllowedMessage=maxPlacesAllowedMessage)
     
-    competitionPlaces = int(competition['numberOfPlaces'])
-
-    if club_points < placesRequired: # check if the number of placesRequired does not exceed point balance
+    if clubPoints < placesRequired: # check if the number of placesRequired does not exceed point balance.
         flash("Your point balance is not enough.")
         return render_template('welcome.html', club=club, competitions=competitions, current_date=current_date)
     
-    if competitionPlaces < placesRequired: # check if the number of placesRequired does not exceed the competition places left
+    if competitionPlaces < placesRequired: # check if the number of placesRequired does not exceed the competition places left.
         flash("Not enough places available for the quantity you requested.")
         return render_template('welcome.html', club=club, competitions=competitions, current_date=current_date)
 
-    if placesRequired <= 0: # check if placesRequired is a valid value
+    if placesRequired <= 0: # check if placesRequired is higher then 0.
         flash('Incorrect value.')
         return render_template('welcome.html', club=club, competitions=competitions, current_date=current_date)
     
+    club['points'] = int(club['points']) - placesRequired 
     competition['numberOfPlaces'] = int(competition['numberOfPlaces']) - placesRequired
     flash('Great, booking complete!')
     return render_template('welcome.html', club=club, competitions=competitions, current_date=current_date)
