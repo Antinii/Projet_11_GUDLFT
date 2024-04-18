@@ -5,12 +5,24 @@ from datetime import datetime
 
 
 def loadClubs():
+    """
+    Function to load clubs data from JSON file.
+
+    Returns:
+        List: List of clubs.
+    """
     with open('clubs.json') as club:
         listOfClubs = json.load(club)['clubs']
         return listOfClubs
 
 
 def loadCompetitions():
+    """
+    Function to load competitions data from JSON file.
+
+    Returns:
+        list: List of competitions.
+    """
     with open('competitions.json') as comps:
         listOfCompetitions = json.load(comps)['competitions']
         return listOfCompetitions
@@ -27,16 +39,31 @@ current_date = datetime.now()
 
 @app.template_filter("string_to_date")
 def string_to_date(value):
+    """
+    Flask template filter to convert string to date.
+
+    Args:
+        value (str): String representing a date.
+
+    Returns:
+        datetime: Datetime object.
+    """
     return datetime.strptime(value, '%Y-%m-%d %H:%M:%S')
 
 
 @app.route('/')
 def index():
+    """
+    Route for the index page.
+    """
     return render_template('index.html')
 
 
 @app.route('/showSummary', methods=['POST'])
 def showSummary():
+    """
+    Route to display summary.
+    """
     club = [club for club in clubs if club['email'] == request.form['email']]
     if club:
         return render_template("welcome.html", club=club[0], competitions=competitions, current_date=current_date)
@@ -46,6 +73,9 @@ def showSummary():
 
 @app.route('/book/<competition>/<club>')
 def book(competition, club):
+    """
+    Route to book a competition.
+    """
     foundClub = [c for c in clubs if c['name'] == club]
     foundCompetition = [c for c in competitions if c['name'] == competition]
     if foundClub and foundCompetition:
@@ -57,6 +87,9 @@ def book(competition, club):
 
 @app.route('/purchasePlaces', methods=['POST'])
 def purchasePlaces():
+    """
+    Route to purchase places.
+    """
     competition = [c for c in competitions if c['name'] == request.form['competition']][0]
     club = [c for c in clubs if c['name'] == request.form['club']][0]
     clubPoints = int(club["points"])
@@ -89,10 +122,16 @@ def purchasePlaces():
 
 @app.route('/displayboard', methods=['GET'])
 def display_board():
+    """
+    Route to display club points board.
+    """
     points_table = [{'name': club['name'], 'points': club['points']} for club in clubs]
     return render_template('points_board.html', points_table=points_table)
 
 
 @app.route('/logout')
 def logout():
+    """
+    Route to log out.
+    """
     return redirect(url_for('index'))
