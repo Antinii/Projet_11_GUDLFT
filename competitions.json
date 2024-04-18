@@ -13,6 +13,11 @@
         {
             "name": "Winter Festival",
             "date":"2024-10-24 09:30:00",
+            "numberOfPlaces": "20"
+        },
+        {
+            "name": "Test Festival",
+            "date": "2024-08-31 14:00:00",
             "numberOfPlaces": "8"
         }
     ]

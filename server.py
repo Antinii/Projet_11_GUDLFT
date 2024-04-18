@@ -23,6 +23,8 @@ competitions = loadCompetitions()
 clubs = loadClubs()
 
 current_date = datetime.now()
+
+
 @app.template_filter("string_to_date")
 def string_to_date(value):
     return datetime.strptime(value, '%Y-%m-%d %H:%M:%S')
@@ -44,10 +46,10 @@ def showSummary():
 
 @app.route('/book/<competition>/<club>')
 def book(competition, club):
-    foundClub = [c for c in clubs if c['name'] == club][0]
-    foundCompetition = [c for c in competitions if c['name'] == competition][0]
+    foundClub = [c for c in clubs if c['name'] == club]
+    foundCompetition = [c for c in competitions if c['name'] == competition]
     if foundClub and foundCompetition:
-        return render_template('booking.html', club=foundClub, competition=foundCompetition)
+        return render_template('booking.html', club=foundClub[0], competition=foundCompetition[0])
     else:
         flash("Something went wrong, please try again")
         return render_template('welcome.html', club=club, competitions=competitions, current_date=current_date)
@@ -63,29 +65,29 @@ def purchasePlaces():
     maxPlacesAllowedMessage = f"Sorry! You can't book more then {maxPlacesAllowed} places."
     competitionPlaces = int(competition['numberOfPlaces'])
 
-    if placesRequired > maxPlacesAllowed: # check if the number of places booked is not exceeding 12 per competition.
+    if placesRequired > maxPlacesAllowed:  # check if the number of places booked is not exceeding 12 per competition.
         return render_template('booking.html', club=club, competition=competition,
                                maxPlacesAllowedMessage=maxPlacesAllowedMessage)
-    
-    if clubPoints < placesRequired: # check if the number of placesRequired does not exceed point balance.
+
+    if clubPoints < placesRequired:  # check if the number of placesRequired does not exceed point balance.
         flash("Your point balance is not enough.")
         return render_template('welcome.html', club=club, competitions=competitions, current_date=current_date)
-    
-    if competitionPlaces < placesRequired: # check if the number of placesRequired does not exceed the competition places left.
+
+    if competitionPlaces < placesRequired:  # check if the number of placesRequired does not exceed the places left.
         flash("Not enough places available for the quantity you requested.")
         return render_template('welcome.html', club=club, competitions=competitions, current_date=current_date)
 
-    if placesRequired <= 0: # check if placesRequired is higher then 0.
+    if placesRequired <= 0:  # check if placesRequired is higher then 0.
         flash('Incorrect value.')
         return render_template('welcome.html', club=club, competitions=competitions, current_date=current_date)
-    
-    club['points'] = int(club['points']) - placesRequired 
+
+    club['points'] = int(club['points']) - placesRequired
     competition['numberOfPlaces'] = int(competition['numberOfPlaces']) - placesRequired
     flash('Great, booking complete!')
     return render_template('welcome.html', club=club, competitions=competitions, current_date=current_date)
 
 
-@app.route('/displayboard')
+@app.route('/displayboard', methods=['GET'])
 def display_board():
     points_table = [{'name': club['name'], 'points': club['points']} for club in clubs]
     return render_template('points_board.html', points_table=points_table)
