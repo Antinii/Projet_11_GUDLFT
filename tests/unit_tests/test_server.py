@@ -33,6 +33,7 @@ class TestShowSummary:
     def test_show_summary_valid_email(self, client):
         """
         Test for valid email input in showSummary route.
+        Fixing the bug: Entering a unknown email crashse the app
         """
         response = client.post("/showSummary", data={"email": "john@simplylift.co"})
         assert response.status_code == 200
@@ -40,6 +41,7 @@ class TestShowSummary:
     def test_show_summary_invalid_email(self, client):
         """
         Test for invalid email input in showSummary route.
+        Fixing the bug: Entering a unknown email crashse the app
         """
         response = client.post("/showSummary", data={"email": "user@test.com"})
         assert response.status_code == 200
@@ -48,6 +50,7 @@ class TestShowSummary:
     def test_outdated_competition(self, monkeypatch, clubs, client, competitions):
         """
         Test for outdated competitions in showSummary route.
+        Fixing the bug: Booking places in past competition 
 
         Args:
             monkeypatch: pytest monkeypatch fixture.
@@ -103,6 +106,7 @@ class TestPurchasePlaces:
     def test_valid_purchase(self, client, clubs, competitions):
         """
         Test for valid purchase in purchasePlaces route.
+        Fixing the bug: Point updates are not reflected.
 
         Args:
             client: Flask test client.
@@ -126,6 +130,7 @@ class TestPurchasePlaces:
     def test_invalid_purchase_not_enough_points(self, client, clubs, competitions):
         """
         Test for invalid purchase because club has not enough points to book.
+        Fixing the bug: Clubs shouldn't be able to use more than their points allowed.
         """
         competition_name = competitions[2]["name"]
         club_name = clubs[1]["name"]  # club 2 only has 4 balance points
@@ -183,6 +188,7 @@ class TestPurchasePlaces:
     def test_booking_over_limit(self, client, clubs, competitions):
         """
         Test for decline booking if the value of places is more then 12.
+        Fixing the bug: Clubs shouldn't be able to book more than 12 places per competition.
         """
         competition = competitions[2]["name"]
         club = clubs[0]["name"]
@@ -198,6 +204,7 @@ class TestPurchasePlaces:
 class TestDisplayBoard:
     """
     Test suite for the display_board route.
+    Fixing the feature: Implement points display board.
     """
     def test_display_board(self, client):
         """
